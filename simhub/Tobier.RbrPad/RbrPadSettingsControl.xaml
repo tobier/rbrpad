@@ -1,0 +1,55 @@
+<UserControl x:Class="Tobier.RbrPad.RbrPadSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:Tobier.RbrPad"
+             xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
+             mc:Ignorable="d">
+    <ScrollViewer>
+        <StackPanel>
+            <styles:SHSection Title="Controller" ShowSeparator="True">
+                <StackPanel>
+                    <Label>Rumble controller (XInput slot)</Label>
+                    <ComboBox x:Name="ControllerCombo"
+                              DisplayMemberPath="Display"
+                              SelectionChanged="ControllerCombo_SelectionChanged"
+                              Margin="0,0,0,6" />
+
+                    <TextBlock x:Name="NotConnectedWarning"
+                               Foreground="#E0B040"
+                               TextWrapping="Wrap"
+                               Visibility="Collapsed"
+                               Margin="0,0,0,6"
+                               Text="⚠ Selected controller is not connected. Connect it (or pick another slot) — rumble will do nothing until then." />
+
+                    <StackPanel Orientation="Horizontal">
+                        <styles:SHButtonPrimary Click="Refresh_Click" Margin="0,0,6,0">Refresh</styles:SHButtonPrimary>
+                        <styles:SHButtonPrimary Click="Test_Click">Test rumble</styles:SHButtonPrimary>
+                    </StackPanel>
+                </StackPanel>
+            </styles:SHSection>
+
+            <styles:SHSection Title="Rumble" ShowSeparator="True">
+                <StackPanel>
+                    <CheckBox x:Name="EnabledCheck"
+                              Content="Enable rumble"
+                              Checked="EnabledCheck_Changed"
+                              Unchecked="EnabledCheck_Changed"
+                              Margin="0,0,0,6" />
+
+                    <Label>Master intensity</Label>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider x:Name="IntensitySlider"
+                                Minimum="0" Maximum="1"
+                                Width="240"
+                                TickFrequency="0.05"
+                                IsSnapToTickEnabled="True"
+                                ValueChanged="IntensitySlider_ValueChanged" />
+                        <TextBlock x:Name="IntensityValue" Margin="8,0,0,0" VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+            </styles:SHSection>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
