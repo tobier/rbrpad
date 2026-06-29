@@ -36,7 +36,7 @@ namespace Tobier.RbrPad
         private readonly DispatcherTimer _readoutTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
 
         /// <summary>Decaying peak/valley holds so the readout is legible instead of flickering at 60 Hz.</summary>
-        private float _damperPeak, _loadValley, _loadPeak, _outputPeak;
+        private float _damperPeak, _loadValley, _loadPeak, _outputPeak, _heavePeak;
 
         public RbrPadSettingsControl(RbrPadPlugin plugin) : this()
         {
@@ -61,10 +61,11 @@ namespace Tobier.RbrPad
             RumbleInputs inputs = _plugin.LatestInputs;
             if (inputs == null)
             {
-                _damperPeak = _loadValley = _loadPeak = _outputPeak = 0f;
+                _damperPeak = _loadValley = _loadPeak = _outputPeak = _heavePeak = 0f;
                 LiveDamperValue.Text = "—";
                 LiveLoadValue.Text = "—";
                 LiveOutputValue.Text = "—";
+                LiveHeaveValue.Text = "—";
                 return;
             }
 
@@ -82,11 +83,13 @@ namespace Tobier.RbrPad
             _loadPeak = PeakHold(_loadPeak, maxLoad);
             _loadValley = ValleyHold(_loadValley, minLoad);
             _outputPeak = PeakHold(_outputPeak, _plugin.LatestHeavyOutput);
+            _heavePeak = PeakHold(_heavePeak, Math.Abs(inputs.HeaveAccel));
 
             LiveDamperValue.Text = _damperPeak.ToString("0.00", CultureInfo.InvariantCulture) + " m/s";
             LiveLoadValue.Text = _loadValley.ToString("0", CultureInfo.InvariantCulture) + "–" +
                                  _loadPeak.ToString("0", CultureInfo.InvariantCulture) + " N";
             LiveOutputValue.Text = (_outputPeak * 100f).ToString("0", CultureInfo.InvariantCulture) + "%";
+            LiveHeaveValue.Text = _heavePeak.ToString("0.00", CultureInfo.InvariantCulture) + " g";
         }
 
         /// <summary>Holds the recent maximum, decaying toward the current value so spikes linger briefly.</summary>

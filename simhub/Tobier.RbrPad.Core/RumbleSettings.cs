@@ -32,5 +32,20 @@ namespace Tobier.RbrPad.Core
 
         /// <summary>Wheel load (N) at or above which the roughness gate is fully open.</summary>
         public float LoadGateHigh { get; set; } = 2000f;
+
+        /// <summary>Per-effect toggle for landing/impact hits.</summary>
+        public bool ImpactEnabled { get; set; } = true;
+
+        /// <summary>Impact contribution to the heavy motor (0..1+).</summary>
+        public float ImpactGain { get; set; } = 1.0f;
+
+        /// <summary>Body jolt (g) below which no impact fires. Above normal braking/cornering (~1 g).</summary>
+        public float ImpactThreshold { get; set; } = 1.2f;
+
+        /// <summary>Body jolt (g) that produces a full-strength impact.</summary>
+        public float ImpactFull { get; set; } = 2.5f;
+
+        /// <summary>Impact envelope decay time constant (s) — how long a hit rings out.</summary>
+        public float ImpactDecay { get; set; } = 0.10f;
     }
 }

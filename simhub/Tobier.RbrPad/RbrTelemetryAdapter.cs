@@ -29,6 +29,7 @@ namespace Tobier.RbrPad
                     RearLeft = car.suspensionLB.strutForce,
                     RearRight = car.suspensionRB.strutForce,
                 },
+                HeaveAccel = car.accelerations.heave,
             };
         }
     }

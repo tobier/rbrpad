@@ -1,5 +1,7 @@
 using GameReaderCommon;
 using SimHub.Plugins;
+using System;
+using System.Diagnostics;
 using System.Windows.Media;
 using Tobier.RbrPad.Core;
 
@@ -14,6 +16,11 @@ namespace Tobier.RbrPad
 
         /// <summary>Last XInput slot we sent rumble to, or -1 if none (so we can stop it cleanly).</summary>
         private int _lastDrivenIndex = -1;
+
+        private readonly RumbleMapper _mapper = new RumbleMapper();
+
+        /// <summary>Measures real time between mapped frames so transient envelopes decay correctly.</summary>
+        private readonly Stopwatch _frameTimer = Stopwatch.StartNew();
 
         public RbrPadPluginSettings Settings;
 
@@ -56,8 +63,11 @@ namespace Tobier.RbrPad
                 return;
             }
 
+            float dt = (float)Math.Min(_frameTimer.Elapsed.TotalSeconds, 0.1);
+            _frameTimer.Restart();
+
             RumbleInputs inputs = RbrTelemetryAdapter.ToInputs(raw);
-            RumbleOutput output = RumbleMapper.Map(inputs, Settings.Rumble);
+            RumbleOutput output = _mapper.Update(inputs, Settings.Rumble, dt);
             LatestInputs = inputs;
             LatestHeavyOutput = output.Left;
 
