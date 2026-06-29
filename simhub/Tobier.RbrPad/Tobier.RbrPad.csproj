@@ -41,6 +41,10 @@
       <HintPath>$(SIMHUB_INSTALL_PATH)GameReaderCommon.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="LFSReader">
+      <HintPath>$(SIMHUB_INSTALL_PATH)LFSReader.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="GongSolutions.WPF.DragDrop">
       <HintPath>$(SIMHUB_INSTALL_PATH)GongSolutions.WPF.DragDrop.dll</HintPath>
     </Reference>
@@ -104,6 +108,7 @@
   <ItemGroup>
     <Compile Include="RbrPadPlugin.cs" />
     <Compile Include="RbrPadPluginSettings.cs" />
+    <Compile Include="RbrTelemetryAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

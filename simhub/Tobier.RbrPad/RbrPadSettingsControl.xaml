@@ -7,10 +7,11 @@
              xmlns:styles="clr-namespace:SimHub.Plugins.Styles;assembly=SimHub.Plugins"
              mc:Ignorable="d">
     <ScrollViewer>
-        <StackPanel>
+        <StackPanel x:Name="Root" Binding.SourceUpdated="Settings_SourceUpdated"
+                    d:DataContext="{d:DesignInstance Type=local:RbrPadPluginSettings}">
             <styles:SHSection Title="Controller" ShowSeparator="True">
                 <StackPanel>
-                    <Label>Rumble controller (XInput slot)</Label>
+                    <styles:SHWrapLabel>Rumble controller (XInput slot)</styles:SHWrapLabel>
                     <ComboBox x:Name="ControllerCombo"
                               DisplayMemberPath="Display"
                               SelectionChanged="ControllerCombo_SelectionChanged"
@@ -30,26 +31,96 @@
                 </StackPanel>
             </styles:SHSection>
 
-            <styles:SHSection Title="Rumble" ShowSeparator="True">
+            <styles:SHSectionCheckbox Title="Rumble" ShowSeparator="True" DataContext="{Binding Rumble}"
+                                      IsChecked="{Binding Enabled, Mode=TwoWay, NotifyOnSourceUpdated=True}">
                 <StackPanel>
-                    <CheckBox x:Name="EnabledCheck"
-                              Content="Enable rumble"
-                              Checked="EnabledCheck_Changed"
-                              Unchecked="EnabledCheck_Changed"
-                              Margin="0,0,0,6" />
-
-                    <Label>Master intensity</Label>
+                    <styles:SHWrapLabel>Master intensity</styles:SHWrapLabel>
                     <StackPanel Orientation="Horizontal">
-                        <Slider x:Name="IntensitySlider"
-                                Minimum="0" Maximum="1"
-                                Width="240"
-                                TickFrequency="0.05"
-                                IsSnapToTickEnabled="True"
-                                ValueChanged="IntensitySlider_ValueChanged" />
-                        <TextBlock x:Name="IntensityValue" Margin="8,0,0,0" VerticalAlignment="Center" />
+                        <Slider Minimum="0" Maximum="1" Width="240"
+                                TickFrequency="0.05" IsSnapToTickEnabled="True"
+                                Value="{Binding MasterIntensity, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding MasterIntensity, StringFormat={}{0:P0}}" />
                     </StackPanel>
                 </StackPanel>
-            </styles:SHSection>
+            </styles:SHSectionCheckbox>
+
+            <styles:SHSectionCheckbox Title="Surface roughness" ShowSeparator="True" DataContext="{Binding Rumble}"
+                                      IsChecked="{Binding RoughnessEnabled, Mode=TwoWay, NotifyOnSourceUpdated=True}">
+                <StackPanel>
+                    <Border Background="#22FFFFFF" CornerRadius="3" Padding="8,6" Margin="0,0,0,10">
+                        <StackPanel>
+                            <styles:SHWrapLabel FontWeight="Bold">Live — tune the sliders against these</styles:SHWrapLabel>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <TextBlock Width="150" Text="Damper vel (peak):" />
+                                <TextBlock x:Name="LiveDamperValue" Text="—" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <TextBlock Width="150" Text="Wheel load (min–max):" />
+                                <TextBlock x:Name="LiveLoadValue" Text="—" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <TextBlock Width="150" Text="Heavy motor out (peak):" />
+                                <TextBlock x:Name="LiveOutputValue" Text="—" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <styles:SHWrapLabel>Gain</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="0" Maximum="2" Width="240"
+                                TickFrequency="0.05" IsSnapToTickEnabled="True"
+                                Value="{Binding RoughnessGain, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding RoughnessGain, StringFormat={}{0:0.00}}" />
+                    </StackPanel>
+
+                    <styles:SHWrapLabel>Response curve (exponent)</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="1" Maximum="4" Width="240"
+                                TickFrequency="0.1" IsSnapToTickEnabled="True"
+                                Value="{Binding RoughnessCurve, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding RoughnessCurve, StringFormat={}{0:0.0}}" />
+                    </StackPanel>
+
+                    <styles:SHWrapLabel>Velocity floor (m/s — below this is silent)</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="0" Maximum="1" Width="240"
+                                TickFrequency="0.05" IsSnapToTickEnabled="True"
+                                Value="{Binding DamperVelocityFloor, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding DamperVelocityFloor, StringFormat={}{0:0.00} m/s}" />
+                    </StackPanel>
+
+                    <styles:SHWrapLabel>Velocity full (m/s — full contribution)</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="0.5" Maximum="4" Width="240"
+                                TickFrequency="0.1" IsSnapToTickEnabled="True"
+                                Value="{Binding DamperVelocityFull, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding DamperVelocityFull, StringFormat={}{0:0.0} m/s}" />
+                    </StackPanel>
+
+                    <styles:SHWrapLabel>Load gate low (N — below this the wheel is muted)</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="0" Maximum="3000" Width="240"
+                                TickFrequency="50" IsSnapToTickEnabled="True"
+                                Value="{Binding LoadGateLow, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding LoadGateLow, StringFormat={}{0:0} N}" />
+                    </StackPanel>
+
+                    <styles:SHWrapLabel>Load gate high (N — full contribution)</styles:SHWrapLabel>
+                    <StackPanel Orientation="Horizontal">
+                        <Slider Minimum="0" Maximum="6000" Width="240"
+                                TickFrequency="100" IsSnapToTickEnabled="True"
+                                Value="{Binding LoadGateHigh, NotifyOnSourceUpdated=True}" />
+                        <TextBlock Margin="8,0,0,0" VerticalAlignment="Center"
+                                   Text="{Binding LoadGateHigh, StringFormat={}{0:0} N}" />
+                    </StackPanel>
+                </StackPanel>
+            </styles:SHSectionCheckbox>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

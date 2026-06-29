@@ -17,6 +17,12 @@ namespace Tobier.RbrPad
 
         public RbrPadPluginSettings Settings;
 
+        /// <summary>Most recent telemetry fed to the mapper, or null when no game data is flowing. For the UI readout.</summary>
+        public RumbleInputs LatestInputs { get; private set; }
+
+        /// <summary>Most recent heavy-motor level actually sent (0..1). For the UI readout.</summary>
+        public float LatestHeavyOutput { get; private set; }
+
         public PluginManager PluginManager { get; set; }
 
         /// <summary>Left-menu icon. Must be 24x24 and readable in black and white.</summary>
@@ -39,14 +45,21 @@ namespace Tobier.RbrPad
                 return;
             }
 
-            var inputs = new RumbleInputs
+            if (data.NewData == data.OldData)
             {
-                GameRunning = true,
-                Rpm = (float)data.NewData.Rpms,
-                MaxRpm = (float)data.NewData.MaxRpm,
-            };
+                return; // Do nothing if data didn't change
+            }
 
+            // Only RBR produces RBRData — for any other game, leave the pad alone.
+            if (!(data.NewData.GetRawDataObject() is RBR.RBRData raw))
+            {
+                return;
+            }
+
+            RumbleInputs inputs = RbrTelemetryAdapter.ToInputs(raw);
             RumbleOutput output = RumbleMapper.Map(inputs, Settings.Rumble);
+            LatestInputs = inputs;
+            LatestHeavyOutput = output.Left;
 
             int index = Settings.ControllerIndex;
             // If the user switched controllers mid-drive, stop the old one so it doesn't stick.
@@ -82,6 +95,8 @@ namespace Tobier.RbrPad
 
             XInputOutput.Stop(_lastDrivenIndex);
             _lastDrivenIndex = -1;
+            LatestInputs = null;
+            LatestHeavyOutput = 0f;
         }
     }
 }

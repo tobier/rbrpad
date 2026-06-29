@@ -40,6 +40,7 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="RumbleInputs.cs"/>
+        <Compile Include="WheelValues.cs"/>
         <Compile Include="RumbleOutput.cs"/>
         <Compile Include="RumbleSettings.cs"/>
         <Compile Include="RumbleMapper.cs"/>

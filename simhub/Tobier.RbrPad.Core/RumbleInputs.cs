@@ -8,10 +8,10 @@ namespace Tobier.RbrPad.Core
         /// <summary>Whether the game is running and producing telemetry.</summary>
         public bool GameRunning;
 
-        /// <summary>Engine speed, revolutions per minute.</summary>
-        public float Rpm;
+        /// <summary>Per-wheel damper piston velocity (m/s).</summary>
+        public WheelValues DamperVelocity;
 
-        /// <summary>Engine redline / max RPM, used to normalize <see cref="Rpm"/>.</summary>
-        public float MaxRpm;
+        /// <summary>Per-wheel strut force (N, negative = load).</summary>
+        public WheelValues StrutForce;
     }
 }

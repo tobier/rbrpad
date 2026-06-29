@@ -9,9 +9,9 @@ namespace Tobier.RbrPad
     public class RbrPadPluginSettings
     {
         /// <summary>Selected XInput user index (0..3) to send rumble to.</summary>
-        public int ControllerIndex = 0;
+        public int ControllerIndex { get; set; } = 0;
 
         /// <summary>Mapping tuning (master enable, intensity).</summary>
-        public RumbleSettings Rumble = new RumbleSettings();
+        public RumbleSettings Rumble { get; set; } = new RumbleSettings();
     }
 }
